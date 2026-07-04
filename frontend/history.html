@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>History - Trading Bot</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body data-page="history">
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a class="brand" href="index.html">
+          <span class="brand-mark">B</span>
+          <span class="brand-text">
+            <strong>Binance Bot</strong>
+            <span>Futures Testnet</span>
+          </span>
+        </a>
+        <nav class="nav" aria-label="Primary">
+          <a href="index.html" data-page="dashboard">Dashboard</a>
+          <a href="client-info.html" data-page="client">Client Info</a>
+          <a href="orders.html" data-page="orders">Place Order</a>
+          <a href="history.html" data-page="history">History</a>
+        </nav>
+        <div class="sidebar-note">History shows BTCUSDT order records from the API when available, otherwise local browser records.</div>
+      </aside>
+
+      <main class="content">
+        <header class="topbar">
+          <div>
+            <h1>History</h1>
+            <p>Previously placed BTCUSDT orders with side, type, quantity, price, and status.</p>
+          </div>
+          <div class="actions">
+            <select id="symbolFilter" style="padding:6px 10px;border-radius:6px;border:1px solid #333;background:#1a1a2e;color:#e0e0e0;font-size:13px;">
+              <option value="BTCUSDT">BTCUSDT</option>
+              <option value="ETHUSDT">ETHUSDT</option>
+              <option value="BNBUSDT">BNBUSDT</option>
+            </select>
+            <button class="button secondary" id="refreshHistory" type="button">↻ Refresh</button>
+            <button class="button secondary" id="downloadJson" type="button">⬇ JSON</button>
+            <button class="button secondary" id="downloadCsv" type="button">⬇ CSV</button>
+            <a class="button secondary" href="orders.html">New Order</a>
+          </div>
+        </header>
+
+        <section class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Time</th>
+                <th>Symbol</th>
+                <th>Side</th>
+                <th>Type</th>
+                <th>Qty</th>
+                <th>Price</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="historyBody"></tbody>
+          </table>
+        </section>
+      </main>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>

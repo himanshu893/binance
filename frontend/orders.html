@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Place Order - Trading Bot</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body data-page="orders">
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a class="brand" href="index.html">
+          <span class="brand-mark">B</span>
+          <span class="brand-text">
+            <strong>Binance Bot</strong>
+            <span>Futures Testnet</span>
+          </span>
+        </a>
+        <nav class="nav" aria-label="Primary">
+          <a href="index.html" data-page="dashboard">Dashboard</a>
+          <a href="client-info.html" data-page="client">Client Info</a>
+          <a href="orders.html" data-page="orders">Place Order</a>
+          <a href="history.html" data-page="history">History</a>
+        </nav>
+        <div class="sidebar-note">Only BTCUSDT is enabled in the order form for this version.</div>
+      </aside>
+
+      <main class="content">
+        <header class="topbar">
+          <div>
+            <h1>Place Order</h1>
+            <p>Create a BTCUSDT Futures Testnet order using dropdowns for fixed choices and text fields where exact numeric input is required.</p>
+          </div>
+          <span class="status-pill">BTCUSDT Only</span>
+        </header>
+
+        <section class="grid two">
+          <form class="panel" id="orderForm">
+            <h2>Order Ticket</h2>
+            <div class="form-grid">
+              <div class="field">
+                <label for="symbol">Symbol</label>
+                <select id="symbol" name="symbol" disabled>
+                  <option value="BTCUSDT">BTCUSDT</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="side">Side</label>
+                <select id="side" name="side" required>
+                  <option value="BUY">BUY</option>
+                  <option value="SELL">SELL</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="orderType">Order Type</label>
+                <select id="orderType" name="order_type" required>
+                  <option value="MARKET">MARKET</option>
+                  <option value="LIMIT">LIMIT</option>
+                  <option value="STOP">STOP</option>
+                </select>
+              </div>
+
+              <div class="field">
+                <label for="quantity">Quantity</label>
+                <input id="quantity" name="quantity" inputmode="decimal" placeholder="0.001" required>
+              </div>
+
+              <div class="field" id="priceField">
+                <label for="price">Price</label>
+                <input id="price" name="price" inputmode="decimal" placeholder="65000">
+              </div>
+
+              <div class="field" id="timeInForceField">
+                <label for="timeInForce">Time In Force</label>
+                <select id="timeInForce" name="time_in_force">
+                  <option value="GTC">GTC</option>
+                  <option value="IOC">IOC</option>
+                  <option value="FOK">FOK</option>
+                  <option value="GTX">GTX</option>
+                  <option value="GTD">GTD</option>
+                </select>
+              </div>
+
+              <div class="field" id="stopPriceField">
+                <label for="stopPrice">Stop Price</label>
+                <input id="stopPrice" name="stop_price" inputmode="decimal" placeholder="64000">
+              </div>
+            </div>
+
+            <div class="actions" style="margin-top: 18px;">
+              <button class="button" type="submit">Submit Order</button>
+              <button class="button secondary" type="reset">Reset</button>
+            </div>
+            <div class="message" id="orderMessage" role="status"></div>
+          </form>
+
+          <aside class="panel">
+            <h2>Validation Rules</h2>
+            <p class="helper">The form follows the current Python validation: side is BUY or SELL, type is MARKET, LIMIT, or STOP, quantity must be greater than zero, LIMIT and STOP require price and time in force, and STOP also requires stop price.</p>
+            <div class="notice" style="margin-top: 16px;">Without a running backend, submissions are saved to browser local storage as local history records.</div>
+          </aside>
+        </section>
+      </main>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>

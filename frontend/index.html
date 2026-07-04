@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Trading Bot Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body data-page="dashboard">
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a class="brand" href="index.html">
+          <span class="brand-mark">B</span>
+          <span class="brand-text">
+            <strong>Binance Bot</strong>
+            <span>Futures Testnet</span>
+          </span>
+        </a>
+        <nav class="nav" aria-label="Primary">
+          <a href="index.html" data-page="dashboard">Dashboard</a>
+          <a href="client-info.html" data-page="client">Client Info</a>
+          <a href="orders.html" data-page="orders">Place Order</a>
+          <a href="history.html" data-page="history">History</a>
+        </nav>
+        <div class="sidebar-note">BTCUSDT order entry with account and history views ready for backend API wiring.</div>
+      </aside>
+
+      <main class="content">
+        <header class="topbar">
+          <div>
+            <h1>Dashboard</h1>
+            <p>Quick status for the trading bot, recent local order records, and shortcuts into the main workflows.</p>
+          </div>
+          <span class="status-pill">Testnet Mode</span>
+        </header>
+
+        <section class="grid three">
+          <article class="metric">
+            <span>Wallet Balance</span>
+            <strong id="walletBalance">--</strong>
+          </article>
+          <article class="metric">
+            <span>Available Balance</span>
+            <strong id="availableBalance">--</strong>
+          </article>
+          <article class="metric good">
+            <span>Unrealized PnL</span>
+            <strong id="unrealizedPnl">--</strong>
+          </article>
+        </section>
+
+        <section style="margin-top: 18px;">
+          <article class="panel">
+            <h2>Primary Actions</h2>
+            <div class="actions">
+              <a class="button" href="orders.html">Place BTCUSDT Order</a>
+              <a class="button secondary" href="client-info.html">View Client Info</a>
+              <a class="button secondary" href="history.html">Open History</a>
+            </div>
+          </article>
+        </section>
+
+        <section style="margin-top: 18px;">
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Time</th>
+                  <th>Symbol</th>
+                  <th>Side</th>
+                  <th>Type</th>
+                  <th>Qty</th>
+                  <th>Price</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="recentOrdersBody"></tbody>
+            </table>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>

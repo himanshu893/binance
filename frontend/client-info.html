@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Client Info - Trading Bot</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body data-page="client">
+    <div class="app-shell">
+      <aside class="sidebar">
+        <a class="brand" href="index.html">
+          <span class="brand-mark">B</span>
+          <span class="brand-text">
+            <strong>Binance Bot</strong>
+            <span>Futures Testnet</span>
+          </span>
+        </a>
+        <nav class="nav" aria-label="Primary">
+          <a href="index.html" data-page="dashboard">Dashboard</a>
+          <a href="client-info.html" data-page="client">Client Info</a>
+          <a href="orders.html" data-page="orders">Place Order</a>
+          <a href="history.html" data-page="history">History</a>
+        </nav>
+        <div class="sidebar-note">Client values map to the existing account details flow in `trading_bot/cli.py`.</div>
+      </aside>
+
+      <main class="content">
+        <header class="topbar">
+          <div>
+            <h1>Client Info</h1>
+            <p>Account balance, trading permission, fee tier, and last refresh time for the Binance Futures Testnet client.</p>
+          </div>
+          <span class="status-pill" id="tradingStatus">Checking</span>
+        </header>
+
+        <section class="grid three">
+          <article class="metric">
+            <span>Total Wallet Balance</span>
+            <strong id="walletBalance">--</strong>
+          </article>
+          <article class="metric">
+            <span>Available Balance</span>
+            <strong id="availableBalance">--</strong>
+          </article>
+          <article class="metric">
+            <span>Fee Tier</span>
+            <strong id="feeTier">--</strong>
+          </article>
+        </section>
+
+        <section class="grid two" style="margin-top: 18px;">
+          <article class="panel">
+            <h2>Risk Snapshot</h2>
+            <div class="grid two">
+              <div>
+                <span class="helper">Unrealized PnL</span>
+                <p><strong id="unrealizedPnl">--</strong></p>
+              </div>
+              <div>
+                <span class="helper">Last Updated</span>
+                <p><strong id="lastUpdated">--</strong></p>
+              </div>
+            </div>
+          </article>
+          <article class="panel">
+            <h2>API Mapping</h2>
+            <p class="helper">This page expects an account JSON response with `totalWalletBalance`, `availableBalance`, `totalUnrealizedProfit`, `canTrade`, `feeTier`, and `updateTime` fields.</p>
+          </article>
+        </section>
+      </main>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>

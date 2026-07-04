@@ -37,22 +37,48 @@ def _sign(params: dict) -> str:
     return f"{query_string}&signature={signature}"
 
 
-def signed_request(method: str, path: str, params: dict = None) -> dict:
+def signed_request(method: str, path: str, params: dict = None,
+                   retries: int = 5, retry_delay: float = 3.0) -> dict:
     """
     Call a SIGNED endpoint (e.g. /fapi/v2/account, /fapi/v1/order).
     Adds timestamp + recvWindow automatically.
+    Retries up to `retries` times on -1007 Testnet timeout errors.
     """
-    params = params.copy() if params else {}
-    params["timestamp"] = int(time.time() * 1000)
-    params.setdefault("recvWindow", 5000)
+    last_error = None
+    for attempt in range(1, retries + 1):
+        p = (params or {}).copy()
+        p["timestamp"] = int(time.time() * 1000)   # fresh timestamp each retry
+        p.setdefault("recvWindow", 60000)  # max allowed by Binance
 
-    query_string = _sign(params)
-    url = f"{BASE_URL}{path}?{query_string}"
+        query_string = _sign(p)
+        url = f"{BASE_URL}{path}?{query_string}"
 
-    resp = session.request(method, url)
-    if not resp.ok:
+        try:
+            resp = session.request(method, url, timeout=15)
+        except requests.exceptions.Timeout:
+            last_error = Exception("Request timed out (no response from Binance).")
+            if attempt < retries:
+                time.sleep(retry_delay)
+            continue
+
+        if resp.ok:
+            return resp.json()
+
+        # -1007: Testnet backend timeout — order status unknown, try again
+        try:
+            body = resp.json()
+        except Exception:
+            body = {}
+
+        if body.get("code") == -1007 and attempt < retries:
+            print(f"[Retry {attempt}/{retries}] -1007 timeout from Binance, retrying in {retry_delay}s…")
+            time.sleep(retry_delay)
+            last_error = Exception(f"{resp.status_code} {resp.reason}: {resp.text}")
+            continue
+
         raise Exception(f"{resp.status_code} {resp.reason}: {resp.text}")
-    return resp.json()
+
+    raise last_error
 
 
 def public_request(method: str, path: str, params: dict = None) -> dict:
