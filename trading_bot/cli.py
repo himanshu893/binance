@@ -1,12 +1,4 @@
-"""
-CLI entry point for Binance Futures Testnet tools.
 
-Options:
-  1. Account details   (client.py -> signed_request account info)
-  2. Place order        (orders.py -> validate_order -> place_order -> log_order)
-  3. Order logs          (order_log.py -> print_order_history)
-  4. Exit
-"""
 
 from client import signed_request
 from orders import submit_order, print_order_summary
@@ -26,14 +18,19 @@ def show_account_details():
 def place_order_flow():
     symbol = input("Symbol (e.g. BTCUSDT): ").strip()
     side = input("Side (BUY/SELL): ").strip()
-    order_type = input("Order type (MARKET/LIMIT): ").strip()
+    order_type = input("Order type (MARKET/LIMIT/STOP): ").strip()
     quantity = input("Quantity: ").strip()
 
     price = None
     time_in_force = None
-    if order_type.strip().upper() == "LIMIT":
+    stop_price = None
+    
+    ot_upper = order_type.strip().upper()
+    if ot_upper in ("LIMIT", "STOP"):
         price = input("Price: ").strip()
         time_in_force = input("Time in force (GTC/IOC/FOK) [GTC]: ").strip() or "GTC"
+    if ot_upper == "STOP":
+        stop_price = input("Stop price (trigger): ").strip()
 
     request = dict(
         symbol=symbol,
@@ -42,6 +39,7 @@ def place_order_flow():
         quantity=quantity,
         price=price,
         time_in_force=time_in_force,
+        stop_price=stop_price,
     )
 
     try:

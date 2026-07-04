@@ -7,7 +7,7 @@ from validation import validate_order, OrderValidationError
 from client import signed_request
 
 
-def submit_order(symbol, side, order_type, quantity, price=None, time_in_force=None):
+def submit_order(symbol, side, order_type, quantity, price=None, time_in_force=None, stop_price=None):
     """
     Validate raw input, then place the order if valid.
     Returns the Binance API response dict, or raises OrderValidationError
@@ -20,6 +20,7 @@ def submit_order(symbol, side, order_type, quantity, price=None, time_in_force=N
         quantity=quantity,
         price=price,
         time_in_force=time_in_force,
+        stop_price=stop_price,
     )
 
     params = {
@@ -32,8 +33,12 @@ def submit_order(symbol, side, order_type, quantity, price=None, time_in_force=N
         params["price"] = clean["price"]
     if "timeInForce" in clean:
         params["timeInForce"] = clean["timeInForce"]
+    if "stopPrice" in clean:
+        params["triggerPrice"] = clean["stopPrice"]
+        params["algoType"] = "CONDITIONAL"
 
-    return signed_request("POST", "/fapi/v1/order", params)
+    endpoint = "/fapi/v1/algoOrder" if clean["type"] in ("STOP", "STOP_MARKET") else "/fapi/v1/order"
+    return signed_request("POST", endpoint, params)
 
 
 def print_order_summary(request: dict, response: dict = None, error: str = None) -> None:
@@ -71,15 +76,19 @@ if __name__ == "__main__":
     print("--- Binance Futures Order Entry ---")
     symbol = input("Enter symbol (e.g. BTCUSDT): ").strip()
     side = input("Enter side (BUY or SELL): ").strip()
-    order_type = input("Enter order type (MARKET or LIMIT): ").strip()
+    order_type = input("Enter order type (MARKET or LIMIT or STOP): ").strip()
     quantity = input("Enter quantity (e.g. 0.001): ").strip()
     
     price = None
     time_in_force = None
+    stop_price = None
     
-    if order_type.strip().upper() == "LIMIT":
+    ot_upper = order_type.strip().upper()
+    if ot_upper in ("LIMIT", "STOP"):
         price = input("Enter price: ").strip()
         time_in_force = input("Enter time_in_force (e.g. GTC): ").strip()
+    if ot_upper == "STOP":
+        stop_price = input("Enter stop price (trigger): ").strip()
         
     request = dict(
         symbol=symbol, 
@@ -87,7 +96,8 @@ if __name__ == "__main__":
         order_type=order_type, 
         quantity=quantity,
         price=price,
-        time_in_force=time_in_force
+        time_in_force=time_in_force,
+        stop_price=stop_price
     )
 
     try:

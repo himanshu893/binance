@@ -15,7 +15,7 @@ import urllib.parse
 import requests
 from dotenv import load_dotenv
 
-load_dotenv()  # Load variables from .env into os.environ
+load_dotenv()
 
 BASE_URL = "https://testnet.binancefuture.com"
 
@@ -50,7 +50,8 @@ def signed_request(method: str, path: str, params: dict = None) -> dict:
     url = f"{BASE_URL}{path}?{query_string}"
 
     resp = session.request(method, url)
-    resp.raise_for_status()
+    if not resp.ok:
+        raise Exception(f"{resp.status_code} {resp.reason}: {resp.text}")
     return resp.json()
 
 
@@ -60,6 +61,32 @@ def public_request(method: str, path: str, params: dict = None) -> dict:
     resp = session.request(method, url, params=params or {})
     resp.raise_for_status()
     return resp.json()
+
+
+def place_order(symbol: str, side: str, order_type: str, quantity: str, price: str = None,
+                 time_in_force: str = "GTC", reduce_only: bool = False,
+                 position_side: str = "BOTH") -> dict:
+    """
+    Place an order on Futures Testnet.
+    side: 'BUY' or 'SELL'
+    order_type: 'MARKET' or 'LIMIT'
+    quantity/price: pass as strings to avoid float precision issues,
+                    respecting the symbol's LOT_SIZE / PRICE_FILTER step size.
+    """
+    params = {
+        "symbol": symbol,
+        "side": side,
+        "type": order_type,
+        "quantity": quantity,
+        "positionSide": position_side,
+    }
+    if order_type == "LIMIT":
+        params["timeInForce"] = time_in_force
+        params["price"] = price
+    if reduce_only:
+        params["reduceOnly"] = "true"
+
+    return signed_request("POST", "/fapi/v1/order", params)
 
 
 if __name__ == "__main__":
